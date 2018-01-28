@@ -1,0 +1,15 @@
+extends base
+
+block content
+	h1 Tweets and such...
+	//pre= h.dump(tweets)
+	
+	ul.tweets
+		for s in tweets.data.statuses
+			li
+				h3 
+					span #{s.user.screen_name} 
+					| tweeted:
+					- const val = (s.retweeted_status) ? s.retweeted_status.full_text : s.full_text
+				p #{val}
+				a(href=h.twitterUrl(s.id_str)) See full tweet
