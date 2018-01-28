@@ -41,7 +41,6 @@ app.use('/', routes);
 // UNSPLASH
 unsplash.fetchPhoto('dogs');
 
-
 // Set port and start the app.
 app.set('port', process.env.PORT || 7777);
 
