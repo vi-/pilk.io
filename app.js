@@ -39,7 +39,7 @@ app.use('/', routes);
 // setInterval( twitterBot.postTweet, 1000*10 );
 
 // UNSPLASH
-unsplash.fetchPhoto('dogs');
+unsplash.fetchPhoto('nature');
 
 // Set port and start the app.
 app.set('port', process.env.PORT || 7777);
