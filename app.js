@@ -12,6 +12,7 @@ const routes			= require('./routes/index');
 const twitterBot 	= require('./controllers/twitterBot');
 const fetchQuote 	= require('./controllers/fetchQuote');
 const unsplash 		= require('./controllers/unsplash');
+const placeText 	= require('./controllers/placeText');
 
 const app = express();
 
@@ -38,8 +39,8 @@ app.use('/', routes);
 // Testing scheduled tweets
 // setInterval( twitterBot.postTweet, 1000*10 );
 
-// UNSPLASH
-unsplash.fetchPhoto('nature');
+// Fetch photo, draw text
+unsplash.fetchPhoto( 'nature', placeText.writeText );
 
 // Set port and start the app.
 app.set('port', process.env.PORT || 7777);
