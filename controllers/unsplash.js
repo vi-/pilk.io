@@ -1,7 +1,8 @@
 const fs = require('fs');
 const axios = require('axios');
+const cnv 	= require('../controllers/canvasOperations');
 
-exports.fetchPhoto = async ( query, call ) => {
+exports.fetchPhoto = async ( query, i ) => {
 	// Set up request URL (API + Auth)
 	const url 		= 'https://api.unsplash.com/photos/random',
 				format 	= 'landscape',
@@ -16,7 +17,8 @@ exports.fetchPhoto = async ( query, call ) => {
 			res.data.forEach( ( r, i ) => {
 				axios
 					.get( r.urls.regular, { responseType: 'arraybuffer' } )
-					.then( res => { fs.writeFileSync( `./assets/image${i}.jpeg`, res.data, setTimeout( call, 100 ) ) })
+					//.then( res => { fs.writeFileSync( `./assets/image${i}.jpeg`, res.data ) })
+					.then( res => { return cnv.addQuote(res.data) } )
 					.catch( err => { console.log(err) });
 			});
 		})

@@ -15,15 +15,6 @@ const bot = new Twit({
 # NOTE: Twitter has 280 Char limit...
 */
 
-// Method to fetch & process twitter stream.
-// exports.processStream = ( track = 'puppies', filter = 'images' ) => {
-// 	const stream = bot.stream( 'statuses/filter', {	track, filter } );
-// 	stream.on('tweet', (tweet) => {
-// 		console.log(
-// 			`By: ${tweet.user.screen_name} \nTweet: ${tweet.text}\nURL: ${fetchUrl( tweet.id_str )}`);
-// 	});
-// }
-
 // Method to search tweets for text
 exports.searchTweets = async ( req, res, next ) => {
 	// User can make requests like http://rooturl.com/?q=Cool&count=5
@@ -48,17 +39,30 @@ exports.searchTweets = async ( req, res, next ) => {
 	
 }
 
-/*
-bot.post( 'statuses/update', {
-	status: '“There is no need for ants to have the ability to fly”'
-}, function( err, data, res ) {
-		if ( err ) {
-			console.log( err );
+exports.uploadMedia = ( description, filePath ) => {
+	bot.postMediaChunked( { file_path: './assets/pilkers.jpg' }, function( err, data, response ) {
+		if (err) {
+			console.log(`Could not uplad media... ${err}`);
 		} else {
-			console.log(data.text + ' was tweeted');
-		} 
-});
-*/
+			console.log(data);
+			const params = {
+				status: description,
+				media_ids: data.media_id_string
+			};
+			postStatus(params);
+		}
+	});
+}
+
+function postStatus(params) {
+	bot.post('statuses/update', params, (err, data, response) => {
+		if (err) {
+			console.log(`Could not update status... ${err}`);
+		} else {
+			console.log('Pilk.io tweeted...');
+		}
+	})
+}
 
 // Scheduled Tweets...
 
