@@ -55,7 +55,7 @@ app.use('/', routes);
 async function makeImg() {
 	// get photo
 	let file = await unsplash.fetchPhoto( 'nature' );
-	setTimeout( function(){ tweetImg(file) }, 1000*10 );
+	//setTimeout( function(){ tweetImg(file) }, 1000*10 );
 }
 
 function tweetImg( file ) {
@@ -64,7 +64,7 @@ function tweetImg( file ) {
 	
 
 makeImg();
-setInterval( makeImg, 1000*60 );
+setInterval( makeImg, 1000*5 );
 
 
 

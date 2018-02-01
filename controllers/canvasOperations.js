@@ -32,11 +32,9 @@ function setupCanvas( data ) {
 	}
 
 	let lineHeight = (fontSize > 42) ? fontSize * .95 : fontSize * 1.1;
-
 	ctx.font = `${fontSize}px amatic`;
 	
 	let wrappedText = getLines( ctx, quote,	canvas.width - 200 );
-
 	let textBoxHeight = wrappedText.length * lineHeight + 20;
 
 	return [ textBoxHeight, wrappedText, lineHeight, quote, fontSize ];
@@ -44,40 +42,44 @@ function setupCanvas( data ) {
 
 function drawText(textBoxHeight, wrappedText, lineHeight, quote, fontSize) {
 
-	console.log(`
-		quote length: ${quote.length}\n
-		font-size: ${fontSize}\n
-		line-height: ${lineHeight}\n
-		quote box height: ${textBoxHeight}`
-	);
-
 	const alignBtm = (canvas.height - textBoxHeight) - 50;
 	const alignMid = (canvas.height - textBoxHeight) / 2;
 	const alignTop = 50;
 
-	const xoff = alignBtm;
+	const yoff = alignBtm;
 
-	// Create gradient backdrop 1st...
-	let grd = ctx.createLinearGradient( 0, xoff, 0, canvas.height );
-	grd.addColorStop(0, "rgba(0,0,0,0)");
-	grd.addColorStop(1, "rgba(0,0,0,.8)" );
-	ctx.fillStyle = grd;
-	ctx.fillRect( 0, alignBtm, canvas.width, canvas.height );
+	// Gradients seems to be supper buggy in node-canvas, so hacking a darkened 
+	// area using a box-shadow on a box that is positioned at the bottom of canvas
+	ctx.shadowBlur = 100;
+	ctx.shadowColor = 'rgba(0,0,0,.5)';
+	ctx.shadowOffsetY = `-${textBoxHeight}`;
+	ctx.fillStyle = 'rgba(0,0,0,1)';
+	ctx.fillRect( -50, canvas.height, canvas.width + 50, textBoxHeight + 100 );
+	ctx.shadowColor = 'transparent';
 
 	// Render the text
 	for (let i = 0; i < wrappedText.length; i++) {
 		ctx.fillStyle = '#fff';
+		ctx.shadowOffsetY = 0;
 		ctx.shadowColor = 'rgba(0,0,0,.5)';
 		ctx.shadowBlur = 10;
-		ctx.fillText(	wrappedText[i], 100, xoff + (lineHeight*(i+1)) );
+		ctx.fillText(	wrappedText[i], 100, yoff + (lineHeight*(i+1)) );
 		//ctx.shadowBlur = 0;
-		//ctx.strokeRect( 50, xoff, canvas.width - 100, textBoxHeight );
+		//ctx.strokeRect( 50, yoff, canvas.width - 100, textBoxHeight );
 	}
 
 	let buf = canvas.toBuffer();
+	fs.writeFileSync(`./assets/pilkers${inc}.jpg`, buf);
 
-	fs.writeFileSync(`./assets/pilkers.jpg`, buf);
-	return `./assets/pilkers.jpg`;
+	/*
+	console.log(`
+		quote length: ${quote.length}\nfont-size: ${fontSize}\n
+		line-height: ${lineHeight}\nquote box height: ${textBoxHeight}\n
+		GRADIENT:\ncreate: 0, ${yoff-50}, 0, ${canvas.height}\n
+		fill: 0, ${alignBtm}, ${canvas.width}, ${canvas.height}}`
+	);
+	*/
+	return `./assets/pilkers${inc}.jpg`;
 }
 
 
@@ -100,10 +102,10 @@ function getLines(ctx, text, maxWidth) {
     return lines;
 }
 
-exports.addQuote = async ( data ) => {
+exports.addQuote = async ( data, inc ) => {
 	console.log('addQuote is here...');
 	// perform all neceserry operations and then export image with text
 	let arr = await setupCanvas( data );
 	let [ textBoxHeight, wrappedText, lineHeight, quote, fontSize ] = arr;
-	drawText( textBoxHeight, wrappedText, lineHeight, quote, fontSize );
+	drawText( textBoxHeight, wrappedText, lineHeight, quote, fontSize, inc );
 } 
