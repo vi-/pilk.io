@@ -69,7 +69,7 @@ function drawText(textBoxHeight, wrappedText, lineHeight, quote, fontSize) {
 	}
 
 	let buf = canvas.toBuffer();
-	fs.writeFileSync(`./assets/pilkers${inc}.jpg`, buf);
+	fs.writeFileSync(`./assets/pilkers.jpg`, buf);
 
 	/*
 	console.log(`
@@ -79,7 +79,7 @@ function drawText(textBoxHeight, wrappedText, lineHeight, quote, fontSize) {
 		fill: 0, ${alignBtm}, ${canvas.width}, ${canvas.height}}`
 	);
 	*/
-	return `./assets/pilkers${inc}.jpg`;
+	return `./assets/pilkers.jpg`;
 }
 
 
@@ -107,5 +107,5 @@ exports.addQuote = async ( data, inc ) => {
 	// perform all neceserry operations and then export image with text
 	let arr = await setupCanvas( data );
 	let [ textBoxHeight, wrappedText, lineHeight, quote, fontSize ] = arr;
-	drawText( textBoxHeight, wrappedText, lineHeight, quote, fontSize, inc );
+	drawText( textBoxHeight, wrappedText, lineHeight, quote, fontSize );
 } 

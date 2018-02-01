@@ -37,25 +37,12 @@ app.use( (req, res, next) => {
 // Handle Routes
 app.use('/', routes);
 
-// Testing scheduled tweets
-// setInterval( twitterBot.postTweet, 1000*10 );
-
 // Experimenting with node-canvas
-
-
-
-//Fetch photo, draw text
-// async function fetchAndProcessPhoto() {
-// 	await unsplash.fetchPhoto( 'nature' );
-// 	setTimeout( cnv.addQuote, 10000);
-// }
-
-// fetchAndProcessPhoto();
 
 async function makeImg() {
 	// get photo
 	let file = await unsplash.fetchPhoto( 'nature' );
-	//setTimeout( function(){ tweetImg(file) }, 1000*10 );
+	setTimeout( function(){ tweetImg(file) }, 1000*10 );
 }
 
 function tweetImg( file ) {
@@ -64,7 +51,7 @@ function tweetImg( file ) {
 	
 
 makeImg();
-setInterval( makeImg, 1000*5 );
+setInterval( makeImg, 1000*60*60*12 );
 
 
 
