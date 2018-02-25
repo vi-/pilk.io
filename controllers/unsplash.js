@@ -1,8 +1,7 @@
 const fs = require('fs');
 const axios = require('axios');
-const cnv 	= require('../controllers/canvasOperations');
 
-exports.fetchPhoto = async ( query  ) => {
+exports.fetchPhoto = async ( query, res) => {
 	// Set up request URL (API + Auth)
 	const url 		= 'https://api.unsplash.com/photos/random',
 				format 	= 'landscape',
@@ -10,18 +9,16 @@ exports.fetchPhoto = async ( query  ) => {
 				params 	= `&orientation=${format}&count=${count}`,
 				access 	= `&client_id=${process.env.UNSPLASH_APP_ID}`;
 
-	const images = await axios
-		.get( `${url}?query=${query}${params}${access}` )
-		.then( res => {
-			// Loop over results & write them to disk
-			res.data.forEach( ( r  ) => {
-				axios
-					.get( r.urls.regular, { responseType: 'arraybuffer' } )
-					//.then( res => { fs.writeFileSync( `./assets/image${i}.jpeg`, res.data ) })
-					.then( res => { return cnv.addQuote( res.data ) } )
-					.catch( err => { console.log(err) });
-			});
-		})
-		.catch( err => { console.log(err)	});
-		return console.log('Image(s) have been saved...');
+		const images = await axios
+			.get( `${url}?query=${query}${params}${access}` )
+			.then( res => res.data )
+			.catch( err => { console.log(`Couldn't return list of images... ${err}`) });
+
+		const img = await axios
+			.get( images[0].urls.regular, { responseType: 'arraybuffer' } )
+			.then( res => res.data )
+			.catch( err => { console.log(`Could not save image to buffer... ${err}`) });
+
+		console.log('Returning img ArrayBuffer...');
+		return img;
 }

@@ -1,17 +1,13 @@
-const fs 					= require('fs');
-const request 		= require('request');
-const fetchQuote 	= require('../controllers/fetchQuote');
+const fs = require('fs');
 const { registerFont, createCanvas, Image } = require('canvas');
 registerFont('./assets/Amatic-Bold.ttf', { family: 'amatic' });
 
 let canvas = createCanvas(1080, 720);
 let ctx = canvas.getContext('2d');
 
-function setupCanvas( data ) {
+function setupCanvas( data, quote ) {
 	
 	let img = new Image();
-	let quote = fetchQuote.processQuote();
-	//img.src = './assets/image0.jpeg';
 	img.src = data;
 
 	[ canvas.width, canvas.height ] =  [ img.width, img.height ];
@@ -64,21 +60,11 @@ function drawText(textBoxHeight, wrappedText, lineHeight, quote, fontSize) {
 		ctx.shadowColor = 'rgba(0,0,0,.5)';
 		ctx.shadowBlur = 10;
 		ctx.fillText(	wrappedText[i], 100, yoff + (lineHeight*(i+1)) );
-		//ctx.shadowBlur = 0;
-		//ctx.strokeRect( 50, yoff, canvas.width - 100, textBoxHeight );
 	}
 
 	let buf = canvas.toBuffer();
+	console.log('Saving image to FS');
 	fs.writeFileSync(`./assets/pilkers.jpg`, buf);
-
-	/*
-	console.log(`
-		quote length: ${quote.length}\nfont-size: ${fontSize}\n
-		line-height: ${lineHeight}\nquote box height: ${textBoxHeight}\n
-		GRADIENT:\ncreate: 0, ${yoff-50}, 0, ${canvas.height}\n
-		fill: 0, ${alignBtm}, ${canvas.width}, ${canvas.height}}`
-	);
-	*/
 	return `./assets/pilkers.jpg`;
 }
 
@@ -102,10 +88,8 @@ function getLines(ctx, text, maxWidth) {
     return lines;
 }
 
-exports.addQuote = async ( data, inc ) => {
-	console.log('addQuote is here...');
-	// perform all neceserry operations and then export image with text
-	let arr = await setupCanvas( data );
-	let [ textBoxHeight, wrappedText, lineHeight, quote, fontSize ] = arr;
-	drawText( textBoxHeight, wrappedText, lineHeight, quote, fontSize );
+exports.addQuote = async ( data, quote ) => {
+	let arr = await setupCanvas( data, quote );
+	let [ textBoxHeight, wrappedText, lineHeight, txt, fontSize ] = arr;
+	drawText( textBoxHeight, wrappedText, lineHeight, txt, fontSize );
 } 
